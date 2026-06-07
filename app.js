@@ -229,6 +229,23 @@
     reader.readAsDataURL(file);
   }
 
+  // Auto-convert standard Google Drive links to direct rendering URLs
+  function convertGoogleDriveLink(url, fileType = "image") {
+    if (!url) return "";
+    // Match file ID from various Google Drive sharing link formats
+    const driveRegex = /(?:\/file\/d\/|\/open\?id=|\/d\/|\/file\/)([a-zA-Z0-9_-]{25,})/;
+    const match = url.match(driveRegex);
+    if (match && match[1]) {
+      const fileId = match[1];
+      if (fileType === "video") {
+        return `https://drive.google.com/uc?export=download&id=${fileId}`;
+      } else {
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+      }
+    }
+    return url;
+  }
+
   // ==========================================================================
   // Rendering Functions
   // ==========================================================================
@@ -506,8 +523,8 @@
     e.preventDefault();
     state.siteName = els.editSiteTitle.value.trim();
     state.siteTagline = els.editSiteTagline.value.trim();
-    state.logoUrl = els.editLogoUrl.value.trim();
-    state.videoUrl = els.editVideoUrl.value.trim();
+    state.logoUrl = convertGoogleDriveLink(els.editLogoUrl.value.trim(), "image");
+    state.videoUrl = convertGoogleDriveLink(els.editVideoUrl.value.trim(), "video");
     state.facebookUrl = els.editFacebookUrl.value.trim();
     state.instagramUrl = els.editInstagramUrl.value.trim();
     
@@ -553,7 +570,7 @@
     const shopData = {
       name: els.editShopName.value.trim(),
       subtitle: els.editShopSubtitle.value.trim(),
-      image: els.editShopImage.value.trim(),
+      image: convertGoogleDriveLink(els.editShopImage.value.trim(), "image"),
       driveUrl: els.editShopDrive.value.trim(),
       description: els.editShopDesc.value.trim()
     };
@@ -624,13 +641,13 @@
     if (sectionKey === "about") {
       state.aboutUs.title = els.editSectionTitle.value.trim();
       state.aboutUs.subtitle = els.editSectionSubtitle.value.trim();
-      state.aboutUs.image = els.editSectionImage.value.trim();
+      state.aboutUs.image = convertGoogleDriveLink(els.editSectionImage.value.trim(), "image");
       state.aboutUs.description = els.editSectionDesc.value.trim();
       renderAboutSection();
     } else if (sectionKey === "leasing") {
       state.leasing.title = els.editSectionTitle.value.trim();
       state.leasing.subtitle = els.editSectionSubtitle.value.trim();
-      state.leasing.image = els.editSectionImage.value.trim();
+      state.leasing.image = convertGoogleDriveLink(els.editSectionImage.value.trim(), "image");
       state.leasing.description = els.editSectionDesc.value.trim();
       state.leasing.email = els.editLeasingEmail.value.trim();
       state.leasing.phone = els.editLeasingPhone.value.trim();
@@ -676,7 +693,7 @@
     const eventData = {
       title: els.editEventTitle.value.trim(),
       date: els.editEventDate.value.trim(),
-      image: els.editEventImage.value.trim(),
+      image: convertGoogleDriveLink(els.editEventImage.value.trim(), "image"),
       description: els.editEventDesc.value.trim()
     };
 
