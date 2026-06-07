@@ -244,11 +244,23 @@
           </div>
           <div class="form-group span-2">
             <label for="edit-logo-url">Logo Image URL (Or SVG Data URL)</label>
-            <input type="text" id="edit-logo-url" required>
+            <div class="input-with-upload">
+              <input type="text" id="edit-logo-url" required>
+              <label class="file-upload-btn">
+                <input type="file" id="upload-logo" accept="image/*" style="display: none;">
+                Upload
+              </label>
+            </div>
           </div>
           <div class="form-group span-2">
             <label for="edit-video-url">Background Video URL (.mp4)</label>
-            <input type="text" id="edit-video-url" required>
+            <div class="input-with-upload">
+              <input type="text" id="edit-video-url" required>
+              <label class="file-upload-btn">
+                <input type="file" id="upload-video" accept="video/mp4, video/webm" style="display: none;">
+                Upload
+              </label>
+            </div>
           </div>
           <div class="form-group">
             <label for="edit-facebook-url">Facebook URL</label>
@@ -288,7 +300,13 @@
           </div>
           <div class="form-group span-2">
             <label for="edit-shop-image">Shop Image URL</label>
-            <input type="text" id="edit-shop-image" required placeholder="Image link (Unsplash or direct URL)">
+            <div class="input-with-upload">
+              <input type="text" id="edit-shop-image" required placeholder="Image link (Unsplash or direct URL)">
+              <label class="file-upload-btn">
+                <input type="file" id="upload-shop-image" accept="image/*" style="display: none;">
+                Upload
+              </label>
+            </div>
           </div>
           <div class="form-group span-2">
             <label for="edit-shop-drive">Google Drive Menu URL (PDF Link)</label>
@@ -328,7 +346,13 @@
           </div>
           <div class="form-group span-2">
             <label for="edit-section-image">Section Image URL</label>
-            <input type="text" id="edit-section-image" required>
+            <div class="input-with-upload">
+              <input type="text" id="edit-section-image" required>
+              <label class="file-upload-btn">
+                <input type="file" id="upload-section-image" accept="image/*" style="display: none;">
+                Upload
+              </label>
+            </div>
           </div>
           <div class="form-group span-2">
             <label for="edit-section-desc">Description Content</label>
@@ -375,7 +399,13 @@
           </div>
           <div class="form-group span-2">
             <label for="edit-event-image">Event Cover/Poster Image URL</label>
-            <input type="text" id="edit-event-image" required placeholder="Flyer image URL">
+            <div class="input-with-upload">
+              <input type="text" id="edit-event-image" required placeholder="Flyer image URL">
+              <label class="file-upload-btn">
+                <input type="file" id="upload-event-image" accept="image/*" style="display: none;">
+                Upload
+              </label>
+            </div>
           </div>
           <div class="form-group span-2">
             <label for="edit-event-desc">Event Description</label>

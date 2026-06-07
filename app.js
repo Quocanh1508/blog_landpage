@@ -113,6 +113,13 @@
     addEventBtn: document.getElementById("add-event-btn"),
     closeEventModalBtn: document.getElementById("close-event-modal-btn"),
     cancelEventModalBtn: document.getElementById("cancel-event-modal-btn"),
+
+    // File Upload Inputs
+    uploadLogo: document.getElementById("upload-logo"),
+    uploadVideo: document.getElementById("upload-video"),
+    uploadShopImage: document.getElementById("upload-shop-image"),
+    uploadSectionImage: document.getElementById("upload-section-image"),
+    uploadEventImage: document.getElementById("upload-event-image"),
   };
 
   // ==========================================================================
@@ -188,6 +195,38 @@
         toast.remove();
       }, 400);
     }, 3200);
+  }
+
+  // Helper for reading local files as Data URLs
+  function handleLocalFileUpload(fileInput, textInput, fileType) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const sizeInMB = file.size / (1024 * 1024);
+
+    // Hard limit check (4.5 MB)
+    if (sizeInMB > 4.5) {
+      showToast(`File is too large (${sizeInMB.toFixed(2)} MB). LocalStorage limit is 5MB. Please compress it or use an online URL.`, "error");
+      fileInput.value = ""; // Clear file selector
+      return;
+    }
+
+    // Warnings
+    if (fileType === "video" && sizeInMB > 1.5) {
+      showToast(`Warning: Video is ${sizeInMB.toFixed(2)} MB. Large video uploads can fail to save in LocalStorage.`, "error");
+    } else if (fileType === "image" && sizeInMB > 1.0) {
+      showToast(`Warning: Image is ${sizeInMB.toFixed(2)} MB. Compressed images (<500KB) are recommended.`, "error");
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      textInput.value = e.target.result;
+      showToast("File processed successfully. Remember to click Save/Apply!");
+    };
+    reader.onerror = function() {
+      showToast("Failed to read local file.", "error");
+    };
+    reader.readAsDataURL(file);
   }
 
   // ==========================================================================
@@ -813,6 +852,23 @@
     els.closeSectionModalBtn.addEventListener("click", closeSectionEditModal);
     els.cancelSectionModalBtn.addEventListener("click", closeSectionEditModal);
     els.sectionEditForm.addEventListener("submit", saveSection);
+
+    // File upload change listeners
+    if (els.uploadLogo) {
+      els.uploadLogo.addEventListener("change", () => handleLocalFileUpload(els.uploadLogo, els.editLogoUrl, "image"));
+    }
+    if (els.uploadVideo) {
+      els.uploadVideo.addEventListener("change", () => handleLocalFileUpload(els.uploadVideo, els.editVideoUrl, "video"));
+    }
+    if (els.uploadShopImage) {
+      els.uploadShopImage.addEventListener("change", () => handleLocalFileUpload(els.uploadShopImage, els.editShopImage, "image"));
+    }
+    if (els.uploadSectionImage) {
+      els.uploadSectionImage.addEventListener("change", () => handleLocalFileUpload(els.uploadSectionImage, els.editSectionImage, "image"));
+    }
+    if (els.uploadEventImage) {
+      els.uploadEventImage.addEventListener("change", () => handleLocalFileUpload(els.uploadEventImage, els.editEventImage, "image"));
+    }
 
     // Close modals on clicking overlay background
     document.querySelectorAll(".modal-overlay").forEach(modal => {
