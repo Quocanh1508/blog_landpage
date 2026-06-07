@@ -74,6 +74,7 @@
 
     // Shop edit modal
     shopEditModal: document.getElementById("shop-edit-modal"),
+    shopModalTitle: document.getElementById("shop-modal-title"),
     shopEditForm: document.getElementById("shop-edit-form"),
     editShopId: document.getElementById("edit-shop-id"),
     editShopName: document.getElementById("edit-shop-name"),
@@ -87,6 +88,7 @@
 
     // Section edit modal
     sectionEditModal: document.getElementById("section-edit-modal"),
+    sectionModalTitle: document.getElementById("section-modal-title"),
     sectionEditForm: document.getElementById("section-edit-form"),
     editSectionName: document.getElementById("edit-section-name"),
     editSectionTitle: document.getElementById("edit-section-title"),
@@ -101,6 +103,7 @@
 
     // Event edit modal
     eventEditModal: document.getElementById("event-edit-modal"),
+    eventModalTitle: document.getElementById("event-modal-title"),
     eventEditForm: document.getElementById("event-edit-form"),
     editEventId: document.getElementById("edit-event-id"),
     editEventTitle: document.getElementById("edit-event-title"),
