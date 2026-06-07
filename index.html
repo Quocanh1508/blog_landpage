@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BLOQ Saigon - Lifestyle & Shopping Park - The first open-air container lifestyle complex in Thao Dien, District 2, HCMC.">
+  <title>BLOQ Saigon - Lifestyle & Shopping Park</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Video Background -->
+  <div class="video-background-container">
+    <video id="bg-video" autoplay loop muted playsinline class="video-bg">
+      <source id="bg-video-src" src="" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <!-- Main App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Header Controls -->
+    <header class="main-header">
+      <!-- Hamburger Menu Button -->
+      <button id="menu-toggle-btn" class="icon-btn" aria-label="Open navigation menu">
+        <svg class="hamburger-icon" viewBox="0 0 24 24" width="28" height="28">
+          <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      <!-- Hidden/Discrete Admin Login Key Button -->
+      <button id="admin-login-trigger" class="icon-btn admin-login-btn" title="Admin Login">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Main Landing View (Center Content) -->
+    <main class="landing-content">
+      <div class="logo-wrapper">
+        <img id="site-logo" src="" alt="BLOQ Saigon Logo" class="site-logo">
+      </div>
+      
+      <h1 id="site-title" class="site-title">BLOQ Saigon!</h1>
+      <p id="site-tagline" class="site-tagline">Lifestyle & Shopping Park - all at BLOQ!</p>
+      
+      <!-- Social Link Buttons -->
+      <div class="social-links-container">
+        <a id="facebook-link" href="#" target="_blank" rel="noopener" class="social-btn facebook-btn">
+          <svg viewBox="0 0 24 24" class="social-icon">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="currentColor"/>
+          </svg>
+          Facebook
+        </a>
+        <a id="instagram-link" href="#" target="_blank" rel="noopener" class="social-btn instagram-btn">
+          <svg viewBox="0 0 24 24" class="social-icon">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" fill="currentColor"/>
+          </svg>
+          Instagram
+        </a>
+      </div>
+    </main>
+    
+    <!-- Footer Branding -->
+    <footer class="main-footer">
+      <div class="footer-badge">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="badge-icon">
+          <circle cx="12" cy="12" r="10" opacity="0.3"/>
+          <circle cx="12" cy="12" r="5"/>
+        </svg>
+        <span>BLOQ Experience</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Navigation Sidebar (Hamburger Menu Drawer) -->
+  <aside id="nav-sidebar" class="nav-sidebar">
+    <button id="sidebar-close-btn" class="close-btn" aria-label="Close menu">&times;</button>
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li><button class="nav-link-btn" data-target="about-panel">ABOUT US!</button></li>
+        <li><button class="nav-link-btn" data-target="shops-panel">OUR MENU!</button></li>
+        <li><button class="nav-link-btn" data-target="shops-panel">OUR SHOPS!</button></li>
+        <li><button class="nav-link-btn" data-target="leasing-panel">LEASING!</button></li>
+        <li><button class="nav-link-btn" data-target="events-panel">NEW EVENTS!</button></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Side Overlay Panels for each Tab -->
+  
+  <!-- 1. About Us Panel -->
+  <section id="about-panel" class="overlay-panel">
+    <div class="panel-header">
+      <button class="panel-back-btn">&larr; Back</button>
+      <button class="panel-close-btn">&times;</button>
+    </div>
+    <div class="panel-content container">
+      <div class="panel-grid-two-cols">
+        <div class="panel-info">
+          <h2 id="about-title" class="section-title">About Us</h2>
+          <h3 id="about-subtitle" class="section-subtitle">Subtitle</h3>
+          <p id="about-desc" class="section-text">About us description...</p>
+          <div class="admin-edit-placeholder" data-editable="about">
+            <button class="admin-action-btn edit-section-btn" data-section="about">Edit About Section</button>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <div class="img-frame">
+            <img id="about-img" src="" alt="About BLOQ Saigon" class="panel-img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Shops / Menu Panel -->
+  <section id="shops-panel" class="overlay-panel">
+    <div class="panel-header">
+      <button class="panel-back-btn">&larr; Back</button>
+      <button class="panel-close-btn">&times;</button>
+    </div>
+    <div class="panel-content container">
+      <div class="shops-panel-header">
+        <h2 class="section-title">Our Shops & Menus</h2>
+        <p class="section-subtitle">Click on any shop to view its menu on Google Drive</p>
+        <div class="admin-edit-placeholder" data-editable="shops-list">
+          <button id="add-shop-btn" class="admin-action-btn add-btn">+ Add New Shop</button>
+        </div>
+      </div>
+      
+      <!-- Shops Grid -->
+      <div id="shops-grid" class="shops-grid">
+        <!-- Dynanically populated with shop cards -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Leasing Panel -->
+  <section id="leasing-panel" class="overlay-panel">
+    <div class="panel-header">
+      <button class="panel-back-btn">&larr; Back</button>
+      <button class="panel-close-btn">&times;</button>
+    </div>
+    <div class="panel-content container">
+      <div class="panel-grid-two-cols">
+        <div class="panel-info">
+          <h2 id="leasing-title" class="section-title">Leasing</h2>
+          <h3 id="leasing-subtitle" class="section-subtitle">Subtitle</h3>
+          <p id="leasing-desc" class="section-text">Leasing description...</p>
+          
+          <div class="contact-box glass-card">
+            <h4>Contact for inquiries:</h4>
+            <p><strong>Email:</strong> <span id="leasing-email">leasing@bloqsaigon.com</span></p>
+            <p><strong>Phone:</strong> <span id="leasing-phone">+84 28 3744 2026</span></p>
+          </div>
+          
+          <div class="admin-edit-placeholder" data-editable="leasing">
+            <button class="admin-action-btn edit-section-btn" data-section="leasing">Edit Leasing Section</button>
+          </div>
+        </div>
+        <div class="panel-visual">
+          <div class="img-frame">
+            <img id="leasing-img" src="" alt="Leasing BLOQ" class="panel-img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Events Panel -->
+  <section id="events-panel" class="overlay-panel">
+    <div class="panel-header">
+      <button class="panel-back-btn">&larr; Back</button>
+      <button class="panel-close-btn">&times;</button>
+    </div>
+    <div class="panel-content container">
+      <div class="events-panel-header">
+        <h2 class="section-title">New Events</h2>
+        <p class="section-subtitle">What's happening at BLOQ Saigon</p>
+        <div class="admin-edit-placeholder" data-editable="events-list">
+          <button id="add-event-btn" class="admin-action-btn add-btn">+ Add New Event</button>
+        </div>
+      </div>
+      
+      <!-- Events Container -->
+      <div id="events-list-container" class="events-list-container">
+        <!-- Dynamically populated with events -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Modals -->
+
+  <!-- Admin Login Modal -->
+  <div id="admin-login-modal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <button id="close-login-btn" class="modal-close">&times;</button>
+      <div class="modal-header">
+        <h3>Admin Authentication</h3>
+        <p>Enter password to unlock editing capabilities</p>
+      </div>
+      <form id="login-form" class="modal-form">
+        <div class="form-group">
+          <label for="admin-password">Password</label>
+          <input type="password" id="admin-password" placeholder="Enter password" required autofocus>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-login-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin General Config Edit Modal (Logo, titles, social links, video URL) -->
+  <div id="general-edit-modal" class="modal-overlay">
+    <div class="modal-card glass-card modal-large">
+      <button class="modal-close general-edit-close">&times;</button>
+      <div class="modal-header">
+        <h3>Edit Page Information & Media</h3>
+        <p>Modify global branding elements, video background, and links</p>
+      </div>
+      <form id="general-edit-form" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-site-title">Site Title</label>
+            <input type="text" id="edit-site-title" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-site-tagline">Site Tagline</label>
+            <input type="text" id="edit-site-tagline" required>
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-logo-url">Logo Image URL (Or SVG Data URL)</label>
+            <input type="text" id="edit-logo-url" required>
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-video-url">Background Video URL (.mp4)</label>
+            <input type="text" id="edit-video-url" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-facebook-url">Facebook URL</label>
+            <input type="url" id="edit-facebook-url" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-instagram-url">Instagram URL</label>
+            <input type="url" id="edit-instagram-url" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary general-edit-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Apply Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Shop Edit Modal -->
+  <div id="shop-edit-modal" class="modal-overlay">
+    <div class="modal-card glass-card modal-large">
+      <button id="close-shop-modal-btn" class="modal-close">&times;</button>
+      <div class="modal-header">
+        <h3 id="shop-modal-title">Edit Shop Details</h3>
+        <p>Configure shop branding, images, description, and menu link</p>
+      </div>
+      <form id="shop-edit-form" class="modal-form">
+        <input type="hidden" id="edit-shop-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-shop-name">Shop Name (e.g. MINH NHI)</label>
+            <input type="text" id="edit-shop-name" required placeholder="Enter shop name">
+          </div>
+          <div class="form-group">
+            <label for="edit-shop-subtitle">Subtitle / Category</label>
+            <input type="text" id="edit-shop-subtitle" required placeholder="e.g. Hủ tiếu Nam Vang">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-shop-image">Shop Image URL</label>
+            <input type="text" id="edit-shop-image" required placeholder="Image link (Unsplash or direct URL)">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-shop-drive">Google Drive Menu URL (PDF Link)</label>
+            <input type="url" id="edit-shop-drive" required placeholder="https://drive.google.com/.../view">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-shop-desc">Shop Description</label>
+            <textarea id="edit-shop-desc" rows="4" required placeholder="Describe the shop and menus..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-shop-modal-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Shop</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Section Edit Modal (About Us & Leasing text edit) -->
+  <div id="section-edit-modal" class="modal-overlay">
+    <div class="modal-card glass-card modal-large">
+      <button id="close-section-modal-btn" class="modal-close">&times;</button>
+      <div class="modal-header">
+        <h3 id="section-modal-title">Edit Section</h3>
+        <p>Update texts, subtitle, and primary image</p>
+      </div>
+      <form id="section-edit-form" class="modal-form">
+        <input type="hidden" id="edit-section-name">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-section-title">Section Title</label>
+            <input type="text" id="edit-section-title" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-section-subtitle">Section Subtitle</label>
+            <input type="text" id="edit-section-subtitle" required>
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-section-image">Section Image URL</label>
+            <input type="text" id="edit-section-image" required>
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-section-desc">Description Content</label>
+            <textarea id="edit-section-desc" rows="6" required></textarea>
+          </div>
+          <!-- Leasing Contacts, visible only for leasing -->
+          <div id="leasing-fields" class="form-group span-2 form-grid" style="display: none; padding: 0;">
+            <div class="form-group">
+              <label for="edit-leasing-email">Leasing Email</label>
+              <input type="email" id="edit-leasing-email">
+            </div>
+            <div class="form-group">
+              <label for="edit-leasing-phone">Leasing Phone</label>
+              <input type="text" id="edit-leasing-phone">
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-section-modal-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Event Edit Modal -->
+  <div id="event-edit-modal" class="modal-overlay">
+    <div class="modal-card glass-card modal-large">
+      <button id="close-event-modal-btn" class="modal-close">&times;</button>
+      <div class="modal-header">
+        <h3 id="event-modal-title">Edit Event Details</h3>
+        <p>Configure event details and graphics</p>
+      </div>
+      <form id="event-edit-form" class="modal-form">
+        <input type="hidden" id="edit-event-id">
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label for="edit-event-title">Event Title</label>
+            <input type="text" id="edit-event-title" required placeholder="e.g. Weekend Acoustic Session">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-event-date">Date & Time</label>
+            <input type="text" id="edit-event-date" required placeholder="e.g. Every Saturday, 7:00 PM">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-event-image">Event Cover/Poster Image URL</label>
+            <input type="text" id="edit-event-image" required placeholder="Flyer image URL">
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-event-desc">Event Description</label>
+            <textarea id="edit-event-desc" rows="4" required placeholder="Provide event details, scheduling, ticket prices..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-event-modal-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Floating Admin Persistent Toolbar (Only displayed when logged in) -->
+  <div id="admin-control-bar" class="admin-control-bar">
+    <div class="admin-bar-brand">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <span>BLOQ CMS MODE</span>
+    </div>
+    <div class="admin-bar-actions">
+      <button id="admin-edit-general-btn" class="bar-btn">Edit Landing Branding</button>
+      <button id="admin-export-btn" class="bar-btn secondary-bar-btn">Export Config</button>
+      <button id="admin-import-btn" class="bar-btn secondary-bar-btn">Import Config</button>
+      <input type="file" id="admin-import-file" accept=".json" style="display: none;">
+      <button id="admin-reset-btn" class="bar-btn reset-bar-btn">Reset Defaults</button>
+      <button id="admin-logout-btn" class="bar-btn logout-bar-btn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Data & Application Logic scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
