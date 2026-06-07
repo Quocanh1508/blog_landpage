@@ -478,8 +478,8 @@
     e.preventDefault();
     const password = els.adminPasswordInput.value;
     
-    // Check credentials: admin / blogthaodien
-    if (password === "blogthaodien") {
+    // Check credentials: admin / bloqthaodien
+    if (password === "bloqthaodien") {
       isAdmin = true;
       sessionStorage.setItem("bloq_admin_active", "true");
       document.body.classList.add("admin-logged-in");
