@@ -390,37 +390,52 @@
       els.bgVideo.src = bgUrl;
       els.bgVideo.load();
       
-      // Fallback: if video fails to load/play, show a static image instead
+      // Fallback: if video completely fails to load, show a static image
+      var fallbackTriggered = false;
       const videoFallback = function() {
-        console.log("Video failed to load/play, falling back to image background.");
+        if (fallbackTriggered) return;
+        fallbackTriggered = true;
+        console.log("Video failed to load, falling back to image background.");
         els.bgVideo.style.display = "none";
         els.bgVideo.pause();
         els.bgImage.style.display = "block";
-        // Use a reliable fallback image
         const fallbackImg = "assets/0522 (2)(6)-Cover.jpg";
         els.bgImage.style.backgroundImage = `url('${fallbackImg}')`;
       };
       
-      // Listen for video errors
+      // Only fall back on actual network/decode errors, NOT on autoplay rejection
       els.bgVideo.onerror = videoFallback;
       
-      // Attempt autoplay with multiple strategies for mobile
-      const playVideo = function() {
+      // Smart play strategy: wait for video data to be ready
+      els.bgVideo.oncanplay = function() {
         els.bgVideo.play().catch(function(err) {
-          console.log("Autoplay blocked, will retry on user interaction.", err);
-          // On mobile if autoplay is totally blocked, fall back to image
-          if (isMobile) {
-            videoFallback();
-          }
+          console.log("Autoplay blocked on canplay, will play on user touch.", err);
         });
       };
-      playVideo();
-      // Also try playing after a short delay (helps on some mobile browsers)
-      setTimeout(function() {
+      
+      // Immediate play attempt (works on desktop and most mobile with muted)
+      els.bgVideo.play().catch(function(err) {
+        console.log("Initial autoplay attempt deferred:", err);
+      });
+      
+      // Retry on first user interaction (mobile Safari/Chrome requirement)
+      var touchPlayHandler = function() {
         if (els.bgVideo.paused && els.bgVideo.style.display !== "none") {
-          playVideo();
+          els.bgVideo.play().catch(function() {});
         }
-      }, 500);
+        document.removeEventListener("touchstart", touchPlayHandler);
+        document.removeEventListener("click", touchPlayHandler);
+      };
+      document.addEventListener("touchstart", touchPlayHandler, { once: true });
+      document.addEventListener("click", touchPlayHandler, { once: true });
+      
+      // Safety timeout: if video hasn't played after 8s, show fallback image
+      setTimeout(function() {
+        if (els.bgVideo.paused && els.bgVideo.style.display !== "none" && !fallbackTriggered) {
+          console.log("Video still not playing after timeout, showing fallback.");
+          videoFallback();
+        }
+      }, 8000);
     } else {
       // Hide and pause video background
       els.bgVideo.style.display = "none";
