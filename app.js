@@ -381,47 +381,58 @@
     currentBgType = bgType;
 
     if (bgType === "video") {
-      // Hide and reset image background
-      els.bgImage.style.display = "none";
-      els.bgImage.style.backgroundImage = "none";
+      // Show static image as a loading backdrop first (uses local asset)
+      const loadingImg = "assets/0522 (2)(6)-Cover.jpg";
+      els.bgImage.style.backgroundImage = `url('${loadingImg}')`;
+      els.bgImage.style.opacity = "1";
 
-      // Show and load video background
-      els.bgVideo.style.display = "block";
+      // Reset video element and begin preloading/buffering
+      els.bgVideo.style.opacity = "0";
       els.bgVideo.src = bgUrl;
       els.bgVideo.load();
       
-      // Fallback: if video completely fails to load, show a static image
       var fallbackTriggered = false;
       const videoFallback = function() {
         if (fallbackTriggered) return;
         fallbackTriggered = true;
-        console.log("Video failed to load, falling back to image background.");
-        els.bgVideo.style.display = "none";
+        console.log("Video failed to load/play, falling back to image background.");
+        els.bgVideo.style.opacity = "0";
         els.bgVideo.pause();
-        els.bgImage.style.display = "block";
-        const fallbackImg = "assets/0522 (2)(6)-Cover.jpg";
-        els.bgImage.style.backgroundImage = `url('${fallbackImg}')`;
+        els.bgImage.style.opacity = "1";
       };
       
-      // Only fall back on actual network/decode errors, NOT on autoplay rejection
+      // Helper to fade in the video smoothly once playback begins
+      const handlePlaySuccess = function() {
+        if (fallbackTriggered) return;
+        els.bgVideo.style.opacity = "1";
+        els.bgImage.style.opacity = "0";
+      };
+
+      // Only fall back on actual network/decode errors
       els.bgVideo.onerror = videoFallback;
       
       // Smart play strategy: wait for video data to be ready
       els.bgVideo.oncanplay = function() {
-        els.bgVideo.play().catch(function(err) {
-          console.log("Autoplay blocked on canplay, will play on user touch.", err);
-        });
+        els.bgVideo.play()
+          .then(handlePlaySuccess)
+          .catch(function(err) {
+            console.log("Autoplay blocked on canplay, will play on user touch.", err);
+          });
       };
       
-      // Immediate play attempt (works on desktop and most mobile with muted)
-      els.bgVideo.play().catch(function(err) {
-        console.log("Initial autoplay attempt deferred:", err);
-      });
+      // Immediate play attempt
+      els.bgVideo.play()
+        .then(handlePlaySuccess)
+        .catch(function(err) {
+          console.log("Initial autoplay attempt deferred:", err);
+        });
       
-      // Retry on first user interaction (mobile Safari/Chrome requirement)
+      // Retry on first user interaction (mobile requirements)
       var touchPlayHandler = function() {
-        if (els.bgVideo.paused && els.bgVideo.style.display !== "none") {
-          els.bgVideo.play().catch(function() {});
+        if (els.bgVideo.paused && els.bgVideo.style.opacity !== "1") {
+          els.bgVideo.play()
+            .then(handlePlaySuccess)
+            .catch(function() {});
         }
         document.removeEventListener("touchstart", touchPlayHandler);
         document.removeEventListener("click", touchPlayHandler);
@@ -429,22 +440,22 @@
       document.addEventListener("touchstart", touchPlayHandler, { once: true });
       document.addEventListener("click", touchPlayHandler, { once: true });
       
-      // Safety timeout: if video hasn't played after 8s, show fallback image
+      // Safety timeout: if video hasn't played after 8s, trigger fallback image
       setTimeout(function() {
-        if (els.bgVideo.paused && els.bgVideo.style.display !== "none" && !fallbackTriggered) {
+        if (els.bgVideo.paused && els.bgVideo.style.opacity === "0" && !fallbackTriggered) {
           console.log("Video still not playing after timeout, showing fallback.");
           videoFallback();
         }
       }, 8000);
     } else {
       // Hide and pause video background
-      els.bgVideo.style.display = "none";
+      els.bgVideo.style.opacity = "0";
       els.bgVideo.pause();
       els.bgVideo.removeAttribute("src");
 
       // Show and set image background
-      els.bgImage.style.display = "block";
       els.bgImage.style.backgroundImage = `url('${bgUrl}')`;
+      els.bgImage.style.opacity = "1";
     }
   }
 

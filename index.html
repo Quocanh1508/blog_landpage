@@ -9,14 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2.1">
 </head>
 <body>
 
   <!-- Fullscreen Media Background (Video or Image) -->
   <div class="video-background-container">
-    <video id="bg-video" autoplay loop muted playsinline class="video-bg" style="display: none;"></video>
-    <div id="bg-image" class="image-bg" style="display: none;"></div>
+    <video id="bg-video" autoplay loop muted playsinline preload="auto" class="video-bg" style="opacity: 0;"></video>
+    <div id="bg-image" class="image-bg" style="opacity: 1;"></div>
     <div class="bg-overlay"></div>
   </div>
 
@@ -464,7 +464,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <!-- Data & Application Logic scripts -->
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=2.1"></script>
+  <script src="app.js?v=2.1"></script>
 </body>
 </html>
