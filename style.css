@@ -1285,3 +1285,12 @@ body.admin-logged-in .logo-wrapper {
     padding-bottom: 5rem;
   }
 }
+
+/* Ensure panel content and landing container can scroll past the fixed admin toolbar */
+body.admin-logged-in .panel-content {
+  padding-bottom: 10rem;
+}
+
+body.admin-logged-in .app-container {
+  padding-bottom: 7rem;
+}
