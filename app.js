@@ -7,12 +7,13 @@
   // Global State
   let state = {};
   let isAdmin = false;
-  let currentVideoUrl = ""; // To prevent unnecessary video reloads
+  let currentBgUrl = "";
+  let currentBgType = "";
 
   // DOM Elements Cache
   const els = {
     bgVideo: document.getElementById("bg-video"),
-    bgVideoSrc: document.getElementById("bg-video-src"),
+    bgImage: document.getElementById("bg-image"),
     siteLogo: document.getElementById("site-logo"),
     siteTitle: document.getElementById("site-title"),
     siteTagline: document.getElementById("site-tagline"),
@@ -68,7 +69,10 @@
     editSiteTitle: document.getElementById("edit-site-title"),
     editSiteTagline: document.getElementById("edit-site-tagline"),
     editLogoUrl: document.getElementById("edit-logo-url"),
-    editVideoUrl: document.getElementById("edit-video-url"),
+    editDesktopBg: document.getElementById("edit-desktop-bg"),
+    editDesktopBgType: document.getElementById("edit-desktop-bg-type"),
+    editMobileBg: document.getElementById("edit-mobile-bg"),
+    editMobileBgType: document.getElementById("edit-mobile-bg-type"),
     editFacebookUrl: document.getElementById("edit-facebook-url"),
     editInstagramUrl: document.getElementById("edit-instagram-url"),
 
@@ -116,7 +120,8 @@
 
     // File Upload Inputs
     uploadLogo: document.getElementById("upload-logo"),
-    uploadVideo: document.getElementById("upload-video"),
+    uploadDesktopBg: document.getElementById("upload-desktop-bg"),
+    uploadMobileBg: document.getElementById("upload-mobile-bg"),
     uploadShopImage: document.getElementById("upload-shop-image"),
     uploadSectionImage: document.getElementById("upload-section-image"),
     uploadEventImage: document.getElementById("upload-event-image"),
@@ -272,16 +277,6 @@
   }
 
   function renderBranding() {
-    // Background video (only load if URL actually changed to prevent restart flickers)
-    if (state.videoUrl !== currentVideoUrl) {
-      currentVideoUrl = state.videoUrl;
-      els.bgVideo.src = state.videoUrl;
-      els.bgVideo.load();
-      els.bgVideo.play().catch(err => {
-        console.log("Autoplay blocked or video loaded, waiting for user click.", err);
-      });
-    }
-
     // Text branding
     els.siteLogo.src = state.logoUrl;
     els.siteTitle.textContent = state.siteName;
@@ -290,6 +285,56 @@
     // Social links
     els.facebookLink.href = state.facebookUrl;
     els.instagramLink.href = state.instagramUrl;
+
+    // Background rendering
+    updateBackground();
+  }
+
+  function updateBackground() {
+    const isMobile = window.innerWidth < 768;
+    
+    // Auto-migrate legacy configuration if loading from older browser cache
+    if (!state.desktopBgUrl && state.videoUrl) {
+      state.desktopBgUrl = state.videoUrl;
+      state.desktopBgType = "video";
+      state.mobileBgUrl = state.videoUrl;
+      state.mobileBgType = "video";
+      delete state.videoUrl;
+      saveState();
+    }
+
+    const bgUrl = isMobile ? state.mobileBgUrl : state.desktopBgUrl;
+    const bgType = isMobile ? state.mobileBgType : state.desktopBgType;
+
+    // Check if background URL or Type changed
+    if (bgUrl === currentBgUrl && bgType === currentBgType) return;
+
+    currentBgUrl = bgUrl;
+    currentBgType = bgType;
+
+    if (bgType === "video") {
+      // Hide and reset image background
+      els.bgImage.style.display = "none";
+      els.bgImage.style.backgroundImage = "none";
+
+      // Show and load video background
+      els.bgVideo.style.display = "block";
+      if (els.bgVideo.src !== bgUrl) {
+        els.bgVideo.src = bgUrl;
+        els.bgVideo.load();
+        els.bgVideo.play().catch(err => {
+          console.log("Autoplay blocked, waiting for user click.", err);
+        });
+      }
+    } else {
+      // Hide and pause video background
+      els.bgVideo.style.display = "none";
+      els.bgVideo.pause();
+
+      // Show and set image background
+      els.bgImage.style.display = "block";
+      els.bgImage.style.backgroundImage = `url('${bgUrl}')`;
+    }
   }
 
   function renderAboutSection() {
@@ -523,7 +568,10 @@
     els.editSiteTitle.value = state.siteName;
     els.editSiteTagline.value = state.siteTagline;
     els.editLogoUrl.value = state.logoUrl;
-    els.editVideoUrl.value = state.videoUrl;
+    els.editDesktopBg.value = state.desktopBgUrl || "";
+    els.editDesktopBgType.value = state.desktopBgType || "video";
+    els.editMobileBg.value = state.mobileBgUrl || "";
+    els.editMobileBgType.value = state.mobileBgType || "video";
     els.editFacebookUrl.value = state.facebookUrl;
     els.editInstagramUrl.value = state.instagramUrl;
     els.generalEditModal.classList.add("open");
@@ -538,7 +586,16 @@
     state.siteName = els.editSiteTitle.value.trim();
     state.siteTagline = els.editSiteTagline.value.trim();
     state.logoUrl = convertGoogleDriveLink(els.editLogoUrl.value.trim(), "image");
-    state.videoUrl = convertGoogleDriveLink(els.editVideoUrl.value.trim(), "video");
+    
+    // Save separate desktop and mobile backgrounds
+    const desktopType = els.editDesktopBgType.value;
+    const mobileType = els.editMobileBgType.value;
+    
+    state.desktopBgUrl = convertGoogleDriveLink(els.editDesktopBg.value.trim(), desktopType);
+    state.desktopBgType = desktopType;
+    state.mobileBgUrl = convertGoogleDriveLink(els.editMobileBg.value.trim(), mobileType);
+    state.mobileBgType = mobileType;
+    
     state.facebookUrl = els.editFacebookUrl.value.trim();
     state.instagramUrl = els.editInstagramUrl.value.trim();
     
@@ -895,12 +952,24 @@
     els.cancelSectionModalBtn.addEventListener("click", closeSectionEditModal);
     els.sectionEditForm.addEventListener("submit", saveSection);
 
+    // Update background on window resize (cross Desktop/Mobile boundary)
+    window.addEventListener("resize", updateBackground);
+
     // File upload change listeners
     if (els.uploadLogo) {
       els.uploadLogo.addEventListener("change", () => handleLocalFileUpload(els.uploadLogo, els.editLogoUrl, "image"));
     }
-    if (els.uploadVideo) {
-      els.uploadVideo.addEventListener("change", () => handleLocalFileUpload(els.uploadVideo, els.editVideoUrl, "video"));
+    if (els.uploadDesktopBg) {
+      els.uploadDesktopBg.addEventListener("change", () => {
+        const type = els.editDesktopBgType.value;
+        handleLocalFileUpload(els.uploadDesktopBg, els.editDesktopBg, type);
+      });
+    }
+    if (els.uploadMobileBg) {
+      els.uploadMobileBg.addEventListener("change", () => {
+        const type = els.editMobileBgType.value;
+        handleLocalFileUpload(els.uploadMobileBg, els.editMobileBg, type);
+      });
     }
     if (els.uploadShopImage) {
       els.uploadShopImage.addEventListener("change", () => handleLocalFileUpload(els.uploadShopImage, els.editShopImage, "image"));

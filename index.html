@@ -13,11 +13,10 @@
 </head>
 <body>
 
-  <!-- Fullscreen Video Background -->
+  <!-- Fullscreen Media Background (Video or Image) -->
   <div class="video-background-container">
-    <video id="bg-video" autoplay loop muted playsinline class="video-bg">
-      <source id="bg-video-src" src="" type="video/mp4">
-    </video>
+    <video id="bg-video" autoplay loop muted playsinline class="video-bg" style="display: none;"></video>
+    <div id="bg-image" class="image-bg" style="display: none;"></div>
     <div class="bg-overlay"></div>
   </div>
 
@@ -253,11 +252,29 @@
             </div>
           </div>
           <div class="form-group span-2">
-            <label for="edit-video-url">Background Video URL (.mp4)</label>
+            <label for="edit-desktop-bg">Desktop Background URL (Image or Video)</label>
             <div class="input-with-upload">
-              <input type="text" id="edit-video-url" required>
+              <input type="text" id="edit-desktop-bg" required>
+              <select id="edit-desktop-bg-type" class="bg-type-select">
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+              </select>
               <label class="file-upload-btn">
-                <input type="file" id="upload-video" accept="video/mp4, video/webm" style="display: none;">
+                <input type="file" id="upload-desktop-bg" accept="image/*, video/mp4, video/webm" style="display: none;">
+                Upload
+              </label>
+            </div>
+          </div>
+          <div class="form-group span-2">
+            <label for="edit-mobile-bg">Mobile Background URL (Image or Video)</label>
+            <div class="input-with-upload">
+              <input type="text" id="edit-mobile-bg" required>
+              <select id="edit-mobile-bg-type" class="bg-type-select">
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+              </select>
+              <label class="file-upload-btn">
+                <input type="file" id="upload-mobile-bg" accept="image/*, video/mp4, video/webm" style="display: none;">
                 Upload
               </label>
             </div>
