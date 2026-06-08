@@ -151,8 +151,10 @@
           console.log(`Upgrading config from v${cachedVersion} to v${latestVersion}`);
           
           // Only update fields that user hasn't customized (still match old defaults)
-          // Always update mobile bg if it was still the old default video
-          if (state.mobileBgUrl && state.mobileBgUrl.includes("mixkit.co") && state.mobileBgType === "video") {
+          // Update mobile bg if it was still an old default (mixkit video or unsplash placeholder)
+          const oldMobileDefaults = ["mixkit.co", "unsplash.com/photo-1555529669"];
+          const isMobileStillDefault = state.mobileBgUrl && oldMobileDefaults.some(function(d) { return state.mobileBgUrl.includes(d); });
+          if (isMobileStillDefault) {
             state.mobileBgUrl = window.DEFAULT_CONFIG.mobileBgUrl;
             state.mobileBgType = window.DEFAULT_CONFIG.mobileBgType;
           }
@@ -347,7 +349,7 @@
         els.bgVideo.pause();
         els.bgImage.style.display = "block";
         // Use a reliable fallback image
-        const fallbackImg = "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1200&auto=format&fit=crop&q=80";
+        const fallbackImg = "assets/0522 (2)(6)-Cover.jpg";
         els.bgImage.style.backgroundImage = `url('${fallbackImg}')`;
       };
       

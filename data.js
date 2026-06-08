@@ -7,7 +7,7 @@ window.DEFAULT_CONFIG = {
   configVersion: 2,
   desktopBgUrl: "https://assets.mixkit.co/videos/preview/mixkit-girl-walking-through-a-modern-shopping-center-40348-large.mp4",
   desktopBgType: "video",
-  mobileBgUrl: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1200&auto=format&fit=crop&q=80",
+  mobileBgUrl: "assets/0522 (2)(6)-Cover.jpg",
   mobileBgType: "image",
   logoUrl: DEFAULT_LOGO,
   siteName: "BLOQ Saigon!",
