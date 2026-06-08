@@ -193,6 +193,29 @@
       if (firebaseData && firebaseData.siteName) {
         // Firebase has config — use it as source of truth
         state = firebaseData;
+
+        // Auto-upgrade Firebase config if version is older
+        const latestVersion = window.DEFAULT_CONFIG.configVersion;
+        if (!state.configVersion || state.configVersion < latestVersion) {
+          console.log(`Upgrading Firebase config from version ${state.configVersion || 1} to ${latestVersion}`);
+          state.configVersion = latestVersion;
+          
+          // Apply new default backgrounds if they were still using the default old ones
+          if (!state.desktopBgUrl || state.desktopBgUrl.includes("mixkit.co")) {
+            state.desktopBgUrl = window.DEFAULT_CONFIG.desktopBgUrl;
+            state.desktopBgType = window.DEFAULT_CONFIG.desktopBgType;
+          }
+          if (!state.mobileBgUrl || state.mobileBgUrl.includes("unsplash.com") || state.mobileBgUrl === "assets/0522 (2)(6)-Cover.jpg") {
+            state.mobileBgUrl = window.DEFAULT_CONFIG.mobileBgUrl;
+            state.mobileBgType = window.DEFAULT_CONFIG.mobileBgType;
+          }
+          
+          // Write back to Firebase
+          configRef.set(state).catch(function(err) {
+            console.error("Failed to auto-upgrade Firebase config:", err);
+          });
+        }
+
         localStorage.setItem("bloq_saigon_config", JSON.stringify(state));
         currentBgUrl = "";
         currentBgType = "";

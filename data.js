@@ -4,11 +4,11 @@
 const DEFAULT_LOGO = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="95" fill="%23d32f2f"/><rect x="60" y="50" width="80" height="70" fill="white" rx="8"/><g><path d="M70 50 L110 120 M90 50 L130 120 M110 50 L140 102 M60 70 L90 120 M60 92 L75 120" stroke="%23d32f2f" stroke-width="8" stroke-linecap="round"/></g><text x="100" y="165" font-family="'Outfit', 'Inter', sans-serif" font-weight="900" font-size="28" fill="white" text-anchor="middle" letter-spacing="6">BLOQ</text></svg>`;
 
 window.DEFAULT_CONFIG = {
-  configVersion: 2,
-  desktopBgUrl: "https://assets.mixkit.co/videos/preview/mixkit-girl-walking-through-a-modern-shopping-center-40348-large.mp4",
+  configVersion: 3,
+  desktopBgUrl: "assets/freecompress-0522 (2)(6).mp4",
   desktopBgType: "video",
-  mobileBgUrl: "assets/0522 (2)(6)-Cover.jpg",
-  mobileBgType: "image",
+  mobileBgUrl: "assets/freecompress-0522 (2)(6).mp4",
+  mobileBgType: "video",
   logoUrl: DEFAULT_LOGO,
   siteName: "BLOQ Saigon!",
   siteTagline: "Lifestyle & Shopping Park - all at BLOQ!",
