@@ -799,6 +799,17 @@
   // Event Listeners Mapping
   // ==========================================================================
   function setupEventListeners() {
+    // Unblock video autoplay on mobile devices upon the first user interaction
+    const unblockAutoplay = () => {
+      if (els.bgVideo && els.bgVideo.paused) {
+        els.bgVideo.play().catch(err => {
+          console.log("Autoplay unblock failed:", err);
+        });
+      }
+    };
+    document.addEventListener("click", unblockAutoplay, { once: true });
+    document.addEventListener("touchstart", unblockAutoplay, { once: true });
+
     // Menu Sidebar buttons
     els.menuToggleBtn.addEventListener("click", openSidebar);
     els.sidebarCloseBtn.addEventListener("click", closeSidebar);
