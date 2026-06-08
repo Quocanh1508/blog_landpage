@@ -290,7 +290,7 @@
     updateBackground();
   }
 
-  function updateBackground() {
+  function updateBackground(forceRefresh) {
     const isMobile = window.innerWidth < 768;
     
     // Auto-migrate legacy configuration if loading from older browser cache
@@ -306,8 +306,8 @@
     const bgUrl = isMobile ? state.mobileBgUrl : state.desktopBgUrl;
     const bgType = isMobile ? state.mobileBgType : state.desktopBgType;
 
-    // Check if background URL or Type changed
-    if (bgUrl === currentBgUrl && bgType === currentBgType) return;
+    // Check if background URL or Type changed (skip cache check on force refresh)
+    if (!forceRefresh && bgUrl === currentBgUrl && bgType === currentBgType) return;
 
     currentBgUrl = bgUrl;
     currentBgType = bgType;
@@ -319,17 +319,23 @@
 
       // Show and load video background
       els.bgVideo.style.display = "block";
-      if (els.bgVideo.src !== bgUrl) {
-        els.bgVideo.src = bgUrl;
-        els.bgVideo.load();
-        els.bgVideo.play().catch(err => {
-          console.log("Autoplay blocked, waiting for user click.", err);
+      els.bgVideo.src = bgUrl;
+      els.bgVideo.load();
+      
+      // Attempt autoplay with multiple strategies for mobile
+      const playVideo = function() {
+        els.bgVideo.play().catch(function(err) {
+          console.log("Autoplay blocked, will retry on user interaction.", err);
         });
-      }
+      };
+      playVideo();
+      // Also try playing after a short delay (helps on some mobile browsers)
+      setTimeout(playVideo, 300);
     } else {
       // Hide and pause video background
       els.bgVideo.style.display = "none";
       els.bgVideo.pause();
+      els.bgVideo.removeAttribute("src");
 
       // Show and set image background
       els.bgImage.style.display = "block";
@@ -600,6 +606,10 @@
     state.instagramUrl = els.editInstagramUrl.value.trim();
     
     saveState();
+    
+    // Reset background cache so both desktop and mobile configs take effect
+    currentBgUrl = "";
+    currentBgType = "";
     renderBranding();
     closeGeneralEditModal();
     showToast("Branding settings saved.");
@@ -827,6 +837,9 @@
         // Simple structural checks
         if (importedData.siteName && importedData.shops && Array.isArray(importedData.shops)) {
           state = importedData;
+          // Reset background cache so imported config applies correctly
+          currentBgUrl = "";
+          currentBgType = "";
           saveState();
           renderAll();
           showToast("Configuration imported successfully!");
@@ -846,6 +859,9 @@
   function resetToDefaults() {
     if (confirm("Are you sure you want to reset all modifications to default values? This cannot be undone.")) {
       state = { ...window.DEFAULT_CONFIG };
+      // Reset background cache so defaults apply correctly
+      currentBgUrl = "";
+      currentBgType = "";
       saveState();
       renderAll();
       showToast("Reset to default demo values.", "info");
@@ -953,7 +969,16 @@
     els.sectionEditForm.addEventListener("submit", saveSection);
 
     // Update background on window resize (cross Desktop/Mobile boundary)
-    window.addEventListener("resize", updateBackground);
+    let resizeTimer;
+    window.addEventListener("resize", function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        // Force refresh on resize so desktop/mobile switch takes effect
+        currentBgUrl = "";
+        currentBgType = "";
+        updateBackground(true);
+      }, 250);
+    });
 
     // File upload change listeners
     if (els.uploadLogo) {

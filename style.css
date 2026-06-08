@@ -1278,3 +1278,10 @@ body.admin-logged-in .logo-wrapper {
   border-color: var(--primary-color);
   background: rgba(0, 0, 0, 0.6);
 }
+
+/* Ensure modal buttons are not hidden behind admin toolbar on mobile */
+@media (max-width: 768px) {
+  body.admin-logged-in .modal-card {
+    padding-bottom: 5rem;
+  }
+}
