@@ -279,16 +279,16 @@
 
     // Hard limit check (4.5 MB)
     if (sizeInMB > 4.5) {
-      showToast(`File is too large (${sizeInMB.toFixed(2)} MB). LocalStorage limit is 5MB. Please compress it or use an online URL.`, "error");
+      showToast(`File is too large (${sizeInMB.toFixed(2)} MB). Firebase limit is 4.5MB for base64 uploads. Please compress it or use an online URL.`, "error");
       fileInput.value = ""; // Clear file selector
       return;
     }
 
     // Warnings
     if (fileType === "video" && sizeInMB > 1.5) {
-      showToast(`Warning: Video is ${sizeInMB.toFixed(2)} MB. Large video uploads can fail to save in LocalStorage.`, "error");
+      showToast(`Warning: Video is ${sizeInMB.toFixed(2)} MB. Large base64 uploads will slow down website loading on mobile.`, "error");
     } else if (fileType === "image" && sizeInMB > 1.0) {
-      showToast(`Warning: Image is ${sizeInMB.toFixed(2)} MB. Compressed images (<500KB) are recommended.`, "error");
+      showToast(`Warning: Image is ${sizeInMB.toFixed(2)} MB. Compressed images (<500KB) or external URLs are highly recommended.`, "error");
     }
 
     const reader = new FileReader();
