@@ -261,7 +261,7 @@
     // Background video (only load if URL actually changed to prevent restart flickers)
     if (state.videoUrl !== currentVideoUrl) {
       currentVideoUrl = state.videoUrl;
-      els.bgVideoSrc.src = state.videoUrl;
+      els.bgVideo.src = state.videoUrl;
       els.bgVideo.load();
       els.bgVideo.play().catch(err => {
         console.log("Autoplay blocked or video loaded, waiting for user click.", err);
