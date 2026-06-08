@@ -9,6 +9,33 @@
   let isAdmin = false;
   let currentBgUrl = "";
   let currentBgType = "";
+  let firebaseReady = false;
+  let configRef = null;
+
+  // ==========================================================================
+  // Firebase Setup
+  // ==========================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyBuJpN8WK6Blde2mBZwmaYmcKokF8d57so",
+    authDomain: "bloq-36312.firebaseapp.com",
+    databaseURL: "https://bloq-36312-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bloq-36312",
+    storageBucket: "bloq-36312.firebasestorage.app",
+    messagingSenderId: "348658092099",
+    appId: "1:348658092099:web:1596b06b1b53178caeacf6"
+  };
+
+  function initFirebase() {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      configRef = firebase.database().ref("config");
+      firebaseReady = true;
+      console.log("Firebase connected.");
+    } catch (err) {
+      console.error("Firebase init failed, running in offline mode:", err);
+      firebaseReady = false;
+    }
+  }
 
   // DOM Elements Cache
   const els = {
@@ -131,50 +158,71 @@
   // Initialization & State Management
   // ==========================================================================
   function init() {
+    initFirebase();
     loadState();
     checkAdminSession();
     renderAll();
     setupEventListeners();
+    startFirebaseSync();
   }
 
   function loadState() {
+    // Step 1: Load from localStorage for INSTANT display (no network wait)
     const cached = localStorage.getItem("bloq_saigon_config");
     if (cached) {
       try {
         state = JSON.parse(cached);
-        
-        // Auto-migrate stale config versions to pick up improved defaults
-        const latestVersion = window.DEFAULT_CONFIG.configVersion || 1;
-        const cachedVersion = state.configVersion || 1;
-        
-        if (cachedVersion < latestVersion) {
-          console.log(`Upgrading config from v${cachedVersion} to v${latestVersion}`);
-          
-          // Only update fields that user hasn't customized (still match old defaults)
-          // Update mobile bg if it was still an old default (mixkit video or unsplash placeholder)
-          const oldMobileDefaults = ["mixkit.co", "unsplash.com/photo-1555529669"];
-          const isMobileStillDefault = state.mobileBgUrl && oldMobileDefaults.some(function(d) { return state.mobileBgUrl.includes(d); });
-          if (isMobileStillDefault) {
-            state.mobileBgUrl = window.DEFAULT_CONFIG.mobileBgUrl;
-            state.mobileBgType = window.DEFAULT_CONFIG.mobileBgType;
-          }
-          
-          state.configVersion = latestVersion;
-          saveState();
-        }
       } catch (e) {
-        console.error("Error parsing config cache, resetting to defaults", e);
+        console.error("Error parsing local cache, using defaults", e);
         state = { ...window.DEFAULT_CONFIG };
-        saveState();
       }
     } else {
       state = { ...window.DEFAULT_CONFIG };
-      saveState();
     }
+    // localStorage is just a fast cache now; Firebase is the source of truth
+    localStorage.setItem("bloq_saigon_config", JSON.stringify(state));
+  }
+
+  function startFirebaseSync() {
+    if (!firebaseReady || !configRef) return;
+
+    // Listen for real-time updates from Firebase
+    configRef.on("value", function(snapshot) {
+      var firebaseData = snapshot.val();
+
+      if (firebaseData && firebaseData.siteName) {
+        // Firebase has config — use it as source of truth
+        state = firebaseData;
+        localStorage.setItem("bloq_saigon_config", JSON.stringify(state));
+        currentBgUrl = "";
+        currentBgType = "";
+        renderAll();
+        console.log("Config synced from Firebase.");
+      } else {
+        // Firebase is empty (first time) — push defaults to Firebase
+        console.log("Firebase empty, pushing defaults...");
+        configRef.set(state).then(function() {
+          console.log("Defaults pushed to Firebase.");
+        }).catch(function(err) {
+          console.error("Failed to push defaults to Firebase:", err);
+        });
+      }
+    }, function(err) {
+      console.error("Firebase listener error:", err);
+    });
   }
 
   function saveState() {
+    // Save to localStorage (instant, offline cache)
     localStorage.setItem("bloq_saigon_config", JSON.stringify(state));
+
+    // Save to Firebase (cloud sync to all devices)
+    if (firebaseReady && configRef) {
+      configRef.set(state).catch(function(err) {
+        console.error("Firebase save error:", err);
+        showToast("Cloud sync failed. Changes saved locally only.", "error");
+      });
+    }
   }
 
   function checkAdminSession() {
