@@ -142,6 +142,24 @@
     if (cached) {
       try {
         state = JSON.parse(cached);
+        
+        // Auto-migrate stale config versions to pick up improved defaults
+        const latestVersion = window.DEFAULT_CONFIG.configVersion || 1;
+        const cachedVersion = state.configVersion || 1;
+        
+        if (cachedVersion < latestVersion) {
+          console.log(`Upgrading config from v${cachedVersion} to v${latestVersion}`);
+          
+          // Only update fields that user hasn't customized (still match old defaults)
+          // Always update mobile bg if it was still the old default video
+          if (state.mobileBgUrl && state.mobileBgUrl.includes("mixkit.co") && state.mobileBgType === "video") {
+            state.mobileBgUrl = window.DEFAULT_CONFIG.mobileBgUrl;
+            state.mobileBgType = window.DEFAULT_CONFIG.mobileBgType;
+          }
+          
+          state.configVersion = latestVersion;
+          saveState();
+        }
       } catch (e) {
         console.error("Error parsing config cache, resetting to defaults", e);
         state = { ...window.DEFAULT_CONFIG };
@@ -322,15 +340,37 @@
       els.bgVideo.src = bgUrl;
       els.bgVideo.load();
       
+      // Fallback: if video fails to load/play, show a static image instead
+      const videoFallback = function() {
+        console.log("Video failed to load/play, falling back to image background.");
+        els.bgVideo.style.display = "none";
+        els.bgVideo.pause();
+        els.bgImage.style.display = "block";
+        // Use a reliable fallback image
+        const fallbackImg = "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1200&auto=format&fit=crop&q=80";
+        els.bgImage.style.backgroundImage = `url('${fallbackImg}')`;
+      };
+      
+      // Listen for video errors
+      els.bgVideo.onerror = videoFallback;
+      
       // Attempt autoplay with multiple strategies for mobile
       const playVideo = function() {
         els.bgVideo.play().catch(function(err) {
           console.log("Autoplay blocked, will retry on user interaction.", err);
+          // On mobile if autoplay is totally blocked, fall back to image
+          if (isMobile) {
+            videoFallback();
+          }
         });
       };
       playVideo();
       // Also try playing after a short delay (helps on some mobile browsers)
-      setTimeout(playVideo, 300);
+      setTimeout(function() {
+        if (els.bgVideo.paused && els.bgVideo.style.display !== "none") {
+          playVideo();
+        }
+      }, 500);
     } else {
       // Hide and pause video background
       els.bgVideo.style.display = "none";
