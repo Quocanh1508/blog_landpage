@@ -229,10 +229,11 @@
     reader.readAsDataURL(file);
   }
 
-  // Auto-convert standard Google Drive links to direct rendering URLs
+  // Auto-convert standard Google Drive and Dropbox links to direct rendering URLs
   function convertGoogleDriveLink(url, fileType = "image") {
     if (!url) return "";
-    // Match file ID from various Google Drive sharing link formats
+    
+    // 1. Google Drive Conversion
     const driveRegex = /(?:\/file\/d\/|\/open\?id=|\/d\/|\/file\/)([a-zA-Z0-9_-]{25,})/;
     const match = url.match(driveRegex);
     if (match && match[1]) {
@@ -243,6 +244,19 @@
         return `https://lh3.googleusercontent.com/d/${fileId}`;
       }
     }
+
+    // 2. Dropbox Conversion
+    if (url.includes("dropbox.com")) {
+      if (url.includes("dl=0")) {
+        return url.replace("dl=0", "raw=1");
+      } else if (url.includes("dl=1")) {
+        return url.replace("dl=1", "raw=1");
+      } else if (!url.includes("raw=1")) {
+        const separator = url.includes("?") ? "&" : "?";
+        return `${url}${separator}raw=1`;
+      }
+    }
+    
     return url;
   }
 
