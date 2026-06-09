@@ -9,14 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2.1">
+  <link rel="stylesheet" href="style.css?v=2.2">
 </head>
 <body>
 
-  <!-- Fullscreen Media Background (Video or Image) -->
+  <!-- Fullscreen Media Background (Video, Image, or Slideshow) -->
   <div class="video-background-container">
     <video id="bg-video" autoplay loop muted playsinline preload="auto" class="video-bg" style="opacity: 0;"></video>
     <div id="bg-image" class="image-bg" style="opacity: 1;"></div>
+    <div id="bg-image-next" class="image-bg-next"></div>
     <div class="bg-overlay"></div>
   </div>
 
@@ -252,17 +253,37 @@
             </div>
           </div>
           <div class="form-group span-2">
-            <label for="edit-desktop-bg">Desktop Background URL (Image or Video)</label>
-            <div class="input-with-upload">
-              <input type="text" id="edit-desktop-bg" required>
+            <label for="edit-desktop-bg">Desktop Background</label>
+            <div class="input-with-upload" style="margin-bottom: 0.5rem;">
               <select id="edit-desktop-bg-type" class="bg-type-select">
                 <option value="video">Video</option>
                 <option value="image">Image</option>
+                <option value="slideshow">Slideshow</option>
               </select>
+            </div>
+            <!-- Single URL input (for video/image mode) -->
+            <div id="desktop-bg-single" class="input-with-upload">
+              <input type="text" id="edit-desktop-bg">
               <label class="file-upload-btn">
                 <input type="file" id="upload-desktop-bg" accept="image/*, video/mp4, video/webm" style="display: none;">
                 Upload
               </label>
+            </div>
+            <!-- Slideshow manager (for slideshow mode) -->
+            <div id="desktop-slideshow-manager" style="display: none;">
+              <div id="slideshow-list" class="slideshow-list"></div>
+              <div class="slideshow-add-row">
+                <input type="text" id="slideshow-new-url" placeholder="Paste image URL here...">
+                <label class="file-upload-btn">
+                  <input type="file" id="upload-slideshow-img" accept="image/*" style="display: none;">
+                  Upload
+                </label>
+                <button type="button" id="slideshow-add-btn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">+ Add</button>
+              </div>
+              <div class="form-group" style="margin-top: 0.75rem;">
+                <label for="edit-slideshow-interval">Slide Duration (seconds)</label>
+                <input type="number" id="edit-slideshow-interval" min="5" max="300" value="60">
+              </div>
             </div>
           </div>
           <div class="form-group span-2">
@@ -464,7 +485,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <!-- Data & Application Logic scripts -->
-  <script src="data.js?v=2.1"></script>
-  <script src="app.js?v=2.1"></script>
+  <script src="data.js?v=2.2"></script>
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>

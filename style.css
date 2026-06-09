@@ -1301,3 +1301,109 @@ body.admin-logged-in .panel-content {
 body.admin-logged-in .app-container {
   padding-bottom: 7rem;
 }
+
+/* ==========================================================================
+   Slideshow Admin Manager
+   ========================================================================== */
+.slideshow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
+}
+
+.slideshow-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+}
+
+.slideshow-item-thumb {
+  width: 48px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+}
+
+.slideshow-item-url {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slideshow-item-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  flex-shrink: 0;
+  min-width: 20px;
+}
+
+.slideshow-item-remove {
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.4);
+  color: #f44336;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.slideshow-item-remove:hover {
+  background: #f44336;
+  color: white;
+}
+
+.slideshow-add-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.slideshow-add-row input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--glass-border);
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: var(--text-white);
+  font-size: 0.85rem;
+}
+
+.slideshow-add-row input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Second background image layer for slideshow cross-fade */
+.image-bg-next {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.9);
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}

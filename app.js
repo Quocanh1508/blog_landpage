@@ -12,6 +12,11 @@
   let firebaseReady = false;
   let configRef = null;
 
+  // Slideshow state
+  let slideshowTimer = null;
+  let slideshowIndex = 0;
+  let slideshowEditList = []; // temp list while editing in admin modal
+
   // ==========================================================================
   // Firebase Setup
   // ==========================================================================
@@ -41,6 +46,7 @@
   const els = {
     bgVideo: document.getElementById("bg-video"),
     bgImage: document.getElementById("bg-image"),
+    bgImageNext: document.getElementById("bg-image-next"),
     siteLogo: document.getElementById("site-logo"),
     siteTitle: document.getElementById("site-title"),
     siteTagline: document.getElementById("site-tagline"),
@@ -403,13 +409,39 @@
     currentBgUrl = bgUrl;
     currentBgType = bgType;
 
-    if (bgType === "video") {
-      // Show static image as a loading backdrop first (uses local asset)
+    // Stop any existing slideshow timer
+    stopSlideshow();
+
+    if (bgType === "slideshow" && !isMobile) {
+      // === SLIDESHOW MODE ===
+      els.bgVideo.style.opacity = "0";
+      els.bgVideo.pause();
+      els.bgVideo.removeAttribute("src");
+      els.bgImageNext.style.opacity = "0";
+
+      const slides = state.desktopSlideshow || [];
+      if (slides.length === 0) {
+        // No slides — show fallback
+        els.bgImage.style.backgroundImage = "url('assets/0522 (2)(6)-Cover.jpg')";
+        els.bgImage.style.opacity = "1";
+        return;
+      }
+
+      // Show first slide immediately
+      slideshowIndex = 0;
+      els.bgImage.style.backgroundImage = `url('${slides[0]}')`;
+      els.bgImage.style.opacity = "1";
+
+      if (slides.length > 1) {
+        startSlideshow(slides);
+      }
+    } else if (bgType === "video") {
+      // === VIDEO MODE ===
+      els.bgImageNext.style.opacity = "0";
       const loadingImg = "assets/0522 (2)(6)-Cover.jpg";
       els.bgImage.style.backgroundImage = `url('${loadingImg}')`;
       els.bgImage.style.opacity = "1";
 
-      // Reset video element and begin preloading/buffering
       els.bgVideo.style.opacity = "0";
       els.bgVideo.src = bgUrl;
       els.bgVideo.load();
@@ -424,17 +456,14 @@
         els.bgImage.style.opacity = "1";
       };
       
-      // Helper to fade in the video smoothly once playback begins
       const handlePlaySuccess = function() {
         if (fallbackTriggered) return;
         els.bgVideo.style.opacity = "1";
         els.bgImage.style.opacity = "0";
       };
 
-      // Only fall back on actual network/decode errors
       els.bgVideo.onerror = videoFallback;
       
-      // Smart play strategy: wait for video data to be ready
       els.bgVideo.oncanplay = function() {
         els.bgVideo.play()
           .then(handlePlaySuccess)
@@ -443,14 +472,12 @@
           });
       };
       
-      // Immediate play attempt
       els.bgVideo.play()
         .then(handlePlaySuccess)
         .catch(function(err) {
           console.log("Initial autoplay attempt deferred:", err);
         });
       
-      // Retry on first user interaction (mobile requirements)
       var touchPlayHandler = function() {
         if (els.bgVideo.paused && els.bgVideo.style.opacity !== "1") {
           els.bgVideo.play()
@@ -463,7 +490,6 @@
       document.addEventListener("touchstart", touchPlayHandler, { once: true });
       document.addEventListener("click", touchPlayHandler, { once: true });
       
-      // Safety timeout: if video hasn't played after 8s, trigger fallback image
       setTimeout(function() {
         if (els.bgVideo.paused && els.bgVideo.style.opacity === "0" && !fallbackTriggered) {
           console.log("Video still not playing after timeout, showing fallback.");
@@ -471,14 +497,50 @@
         }
       }, 8000);
     } else {
-      // Hide and pause video background
+      // === IMAGE MODE ===
       els.bgVideo.style.opacity = "0";
       els.bgVideo.pause();
       els.bgVideo.removeAttribute("src");
+      els.bgImageNext.style.opacity = "0";
 
-      // Show and set image background
       els.bgImage.style.backgroundImage = `url('${bgUrl}')`;
       els.bgImage.style.opacity = "1";
+    }
+  }
+
+  // ==========================================================================
+  // Slideshow Engine
+  // ==========================================================================
+  function startSlideshow(slides) {
+    const interval = (state.slideshowInterval || 60) * 1000;
+
+    slideshowTimer = setInterval(function() {
+      slideshowIndex = (slideshowIndex + 1) % slides.length;
+      const nextUrl = slides[slideshowIndex];
+
+      // Preload the next image
+      const preloader = new Image();
+      preloader.onload = function() {
+        // Set next image on the hidden layer, then cross-fade
+        els.bgImageNext.style.backgroundImage = `url('${nextUrl}')`;
+        els.bgImageNext.style.opacity = "1";
+        els.bgImage.style.opacity = "0";
+
+        // After transition completes, swap layers
+        setTimeout(function() {
+          els.bgImage.style.backgroundImage = `url('${nextUrl}')`;
+          els.bgImage.style.opacity = "1";
+          els.bgImageNext.style.opacity = "0";
+        }, 1600); // slightly longer than the CSS transition (1.5s)
+      };
+      preloader.src = nextUrl;
+    }, interval);
+  }
+
+  function stopSlideshow() {
+    if (slideshowTimer) {
+      clearInterval(slideshowTimer);
+      slideshowTimer = null;
     }
   }
 
@@ -719,11 +781,80 @@
     els.editMobileBgType.value = state.mobileBgType || "video";
     els.editFacebookUrl.value = state.facebookUrl;
     els.editInstagramUrl.value = state.instagramUrl;
+
+    // Initialize slideshow edit list
+    slideshowEditList = (state.desktopSlideshow || []).slice();
+    var intervalInput = document.getElementById("edit-slideshow-interval");
+    if (intervalInput) intervalInput.value = state.slideshowInterval || 60;
+    renderSlideshowEditList();
+    toggleDesktopBgMode();
+
     els.generalEditModal.classList.add("open");
   }
 
   function closeGeneralEditModal() {
     els.generalEditModal.classList.remove("open");
+  }
+
+  function toggleDesktopBgMode() {
+    var type = els.editDesktopBgType.value;
+    var singleEl = document.getElementById("desktop-bg-single");
+    var slideshowEl = document.getElementById("desktop-slideshow-manager");
+    if (type === "slideshow") {
+      singleEl.style.display = "none";
+      slideshowEl.style.display = "block";
+    } else {
+      singleEl.style.display = "flex";
+      slideshowEl.style.display = "none";
+    }
+  }
+
+  function renderSlideshowEditList() {
+    var listEl = document.getElementById("slideshow-list");
+    if (!listEl) return;
+    listEl.innerHTML = "";
+
+    if (slideshowEditList.length === 0) {
+      listEl.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 1rem 0;">No slides added yet. Add image URLs below.</p>';
+      return;
+    }
+
+    slideshowEditList.forEach(function(url, i) {
+      var item = document.createElement("div");
+      item.className = "slideshow-item";
+      var shortUrl = url.length > 50 ? url.substring(0, 50) + "..." : url;
+      item.innerHTML = `
+        <span class="slideshow-item-num">${i + 1}</span>
+        <img class="slideshow-item-thumb" src="${url}" alt="Slide ${i + 1}" onerror="this.style.display='none'">
+        <span class="slideshow-item-url" title="${url}">${shortUrl}</span>
+        <button type="button" class="slideshow-item-remove" data-index="${i}">&times;</button>
+      `;
+      listEl.appendChild(item);
+    });
+
+    // Attach remove handlers
+    listEl.querySelectorAll(".slideshow-item-remove").forEach(function(btn) {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        var idx = parseInt(btn.getAttribute("data-index"));
+        slideshowEditList.splice(idx, 1);
+        renderSlideshowEditList();
+      });
+    });
+  }
+
+  function addSlideshowImage() {
+    var input = document.getElementById("slideshow-new-url");
+    var url = input.value.trim();
+    if (!url) {
+      showToast("Please enter an image URL.", "error");
+      return;
+    }
+    url = convertGoogleDriveLink(url, "image");
+    slideshowEditList.push(url);
+    input.value = "";
+    renderSlideshowEditList();
+    showToast(`Slide #${slideshowEditList.length} added.`);
   }
 
   function saveGeneralEdit(e) {
@@ -736,8 +867,18 @@
     const desktopType = els.editDesktopBgType.value;
     const mobileType = els.editMobileBgType.value;
     
-    state.desktopBgUrl = convertGoogleDriveLink(els.editDesktopBg.value.trim(), desktopType);
-    state.desktopBgType = desktopType;
+    if (desktopType === "slideshow") {
+      state.desktopBgType = "slideshow";
+      state.desktopSlideshow = slideshowEditList.slice();
+      var intervalInput = document.getElementById("edit-slideshow-interval");
+      state.slideshowInterval = parseInt(intervalInput.value) || 60;
+      // Set desktopBgUrl to first slide for compatibility
+      state.desktopBgUrl = slideshowEditList.length > 0 ? slideshowEditList[0] : "";
+    } else {
+      state.desktopBgUrl = convertGoogleDriveLink(els.editDesktopBg.value.trim(), desktopType);
+      state.desktopBgType = desktopType;
+    }
+    
     state.mobileBgUrl = convertGoogleDriveLink(els.editMobileBg.value.trim(), mobileType);
     state.mobileBgType = mobileType;
     
@@ -1083,6 +1224,22 @@
       btn.addEventListener("click", closeGeneralEditModal);
     });
     els.generalEditForm.addEventListener("submit", saveGeneralEdit);
+
+    // Desktop bg type toggle (show/hide slideshow manager)
+    els.editDesktopBgType.addEventListener("change", toggleDesktopBgMode);
+
+    // Slideshow admin controls
+    var slideshowAddBtn = document.getElementById("slideshow-add-btn");
+    if (slideshowAddBtn) {
+      slideshowAddBtn.addEventListener("click", addSlideshowImage);
+    }
+    var uploadSlideshowImg = document.getElementById("upload-slideshow-img");
+    if (uploadSlideshowImg) {
+      uploadSlideshowImg.addEventListener("change", function() {
+        var newUrlInput = document.getElementById("slideshow-new-url");
+        handleLocalFileUpload(uploadSlideshowImg, newUrlInput, "image");
+      });
+    }
 
     // Shop editing triggers
     els.addShopBtn.addEventListener("click", () => openShopEditModal());
