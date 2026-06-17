@@ -74,6 +74,7 @@
     leasingImg: document.getElementById("leasing-img"),
 
     shopsGrid: document.getElementById("shops-grid"),
+    retailShopsGrid: document.getElementById("retail-shops-grid"),
     eventsListContainer: document.getElementById("events-list-container"),
 
     // Modals
@@ -114,12 +115,14 @@
     shopModalTitle: document.getElementById("shop-modal-title"),
     shopEditForm: document.getElementById("shop-edit-form"),
     editShopId: document.getElementById("edit-shop-id"),
+    editShopType: document.getElementById("edit-shop-type"),
     editShopName: document.getElementById("edit-shop-name"),
     editShopSubtitle: document.getElementById("edit-shop-subtitle"),
     editShopImage: document.getElementById("edit-shop-image"),
     editShopDrive: document.getElementById("edit-shop-drive"),
     editShopDesc: document.getElementById("edit-shop-desc"),
     addShopBtn: document.getElementById("add-shop-btn"),
+    addRetailShopBtn: document.getElementById("add-retail-shop-btn"),
     closeShopModalBtn: document.getElementById("close-shop-modal-btn"),
     cancelShopModalBtn: document.getElementById("cancel-shop-modal-btn"),
 
@@ -181,6 +184,14 @@
     if (cached) {
       try {
         state = JSON.parse(cached);
+        // Local state migration
+        const latestVersion = window.DEFAULT_CONFIG.configVersion;
+        if (!state.configVersion || state.configVersion < latestVersion) {
+          state.configVersion = latestVersion;
+          if (!state.retailShops) {
+            state.retailShops = window.DEFAULT_CONFIG.retailShops || [];
+          }
+        }
       } catch (e) {
         console.error("Error parsing local cache, using defaults", e);
         state = { ...window.DEFAULT_CONFIG };
@@ -217,6 +228,11 @@
           if (!state.mobileBgUrl || state.mobileBgUrl.includes("unsplash.com") || state.mobileBgUrl === "assets/0522 (2)(6)-Cover.jpg") {
             state.mobileBgUrl = window.DEFAULT_CONFIG.mobileBgUrl;
             state.mobileBgType = window.DEFAULT_CONFIG.mobileBgType;
+          }
+
+          // Merge retail shops if missing
+          if (!state.retailShops) {
+            state.retailShops = window.DEFAULT_CONFIG.retailShops || [];
           }
           
           // Write back to Firebase
@@ -373,6 +389,7 @@
     renderAboutSection();
     renderLeasingSection();
     renderShops();
+    renderRetailShops();
     renderEvents();
   }
 
@@ -629,6 +646,88 @@
           deleteShop(shopId);
         });
       });
+    }
+  }
+
+  function renderRetailShops() {
+    if (!els.retailShopsGrid) return;
+    els.retailShopsGrid.innerHTML = "";
+
+    const retailShops = state.retailShops || [];
+
+    if (retailShops.length === 0) {
+      els.retailShopsGrid.innerHTML = `<p class="section-text" style="text-align: center; grid-column: span 2;">No shops available. Log in as admin to add some!</p>`;
+      return;
+    }
+
+    retailShops.forEach(shop => {
+      // Create shop card
+      const card = document.createElement("div");
+      card.className = "shop-card";
+      
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".admin-action-btn")) return;
+        window.open(shop.shopUrl || shop.driveUrl || "#", "_blank", "noopener,noreferrer");
+      });
+
+      let adminControls = "";
+      if (isAdmin) {
+        adminControls = `
+          <div class="admin-edit-placeholder" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <button class="admin-action-btn edit-btn edit-retail-shop-btn-trigger" data-id="${shop.id}">Edit</button>
+            <button class="admin-action-btn delete-btn delete-retail-shop-btn-trigger" data-id="${shop.id}">Delete</button>
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="shop-card-visual">
+          <img src="${shop.image}" alt="${shop.name}" class="shop-card-img" onerror="this.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600'">
+        </div>
+        <div class="shop-card-content">
+          <h3 class="shop-card-title">${shop.name}</h3>
+          <h4 class="shop-card-subtitle">${shop.subtitle}</h4>
+          <div class="shop-card-action">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+            </svg>
+            Click here to Visit
+          </div>
+          ${adminControls}
+        </div>
+      `;
+
+      els.retailShopsGrid.appendChild(card);
+    });
+
+    if (isAdmin) {
+      document.querySelectorAll(".edit-retail-shop-btn-trigger").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const shopId = btn.getAttribute("data-id");
+          openShopEditModal(shopId, "retail");
+        });
+      });
+
+      document.querySelectorAll(".delete-retail-shop-btn-trigger").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const shopId = btn.getAttribute("data-id");
+          deleteRetailShop(shopId);
+        });
+      });
+    }
+  }
+
+  function deleteRetailShop(shopId) {
+    const shop = (state.retailShops || []).find(s => s.id === shopId);
+    if (!shop) return;
+    
+    if (confirm(`Are you sure you want to delete retail shop "${shop.name}"?`)) {
+      state.retailShops = state.retailShops.filter(s => s.id !== shopId);
+      saveState();
+      renderRetailShops();
+      showToast(`Retail shop "${shop.name}" deleted.`, "error");
     }
   }
 
@@ -898,28 +997,47 @@
   }
 
   // B. Shops
-  function openShopEditModal(shopId = "") {
+  function openShopEditModal(shopId = "", targetType = "menu") {
+    let type = targetType;
     if (shopId) {
-      // Edit mode
-      const shop = state.shops.find(s => s.id === shopId);
+      const isMenu = state.shops.some(s => s.id === shopId);
+      type = isMenu ? "menu" : "retail";
+      
+      const shop = type === "menu" 
+        ? state.shops.find(s => s.id === shopId)
+        : (state.retailShops || []).find(s => s.id === shopId);
+        
       if (!shop) return;
-      els.shopModalTitle.textContent = "Edit Shop Details";
+      
       els.editShopId.value = shop.id;
+      els.editShopType.value = type;
       els.editShopName.value = shop.name;
       els.editShopSubtitle.value = shop.subtitle;
       els.editShopImage.value = shop.image;
-      els.editShopDrive.value = shop.driveUrl;
+      els.editShopDrive.value = type === "menu" ? shop.driveUrl : (shop.shopUrl || "");
       els.editShopDesc.value = shop.description;
     } else {
-      // Add mode
-      els.shopModalTitle.textContent = "Add New Shop";
       els.editShopId.value = "";
+      els.editShopType.value = type;
       els.editShopName.value = "";
       els.editShopSubtitle.value = "";
       els.editShopImage.value = "";
       els.editShopDrive.value = "";
       els.editShopDesc.value = "";
     }
+
+    // Adjust titles & labels dynamically
+    const driveLabel = document.querySelector("label[for='edit-shop-drive']");
+    if (type === "menu") {
+      els.shopModalTitle.textContent = shopId ? "Edit Restaurant Details" : "Add New Restaurant";
+      if (driveLabel) driveLabel.textContent = "Google Drive Menu URL (PDF Link)";
+      els.editShopDrive.placeholder = "https://drive.google.com/.../view";
+    } else {
+      els.shopModalTitle.textContent = shopId ? "Edit Retail Shop Details" : "Add New Retail Shop";
+      if (driveLabel) driveLabel.textContent = "Website / Social Media URL";
+      els.editShopDrive.placeholder = "https://www.facebook.com/... or website URL";
+    }
+
     els.shopEditModal.classList.add("open");
   }
 
@@ -930,30 +1048,53 @@
   function saveShop(e) {
     e.preventDefault();
     const id = els.editShopId.value;
+    const type = els.editShopType.value || "menu";
     const shopData = {
       name: els.editShopName.value.trim(),
       subtitle: els.editShopSubtitle.value.trim(),
       image: convertGoogleDriveLink(els.editShopImage.value.trim(), "image"),
-      driveUrl: els.editShopDrive.value.trim(),
       description: els.editShopDesc.value.trim()
     };
 
+    if (type === "menu") {
+      shopData.driveUrl = els.editShopDrive.value.trim();
+    } else {
+      shopData.shopUrl = els.editShopDrive.value.trim();
+    }
+
     if (id) {
       // Update
-      const index = state.shops.findIndex(s => s.id === id);
-      if (index !== -1) {
-        state.shops[index] = { ...state.shops[index], ...shopData };
-        showToast("Shop profile updated.");
+      if (type === "menu") {
+        const index = state.shops.findIndex(s => s.id === id);
+        if (index !== -1) {
+          state.shops[index] = { ...state.shops[index], ...shopData };
+          showToast("Restaurant profile updated.");
+        }
+      } else {
+        if (!state.retailShops) state.retailShops = [];
+        const index = state.retailShops.findIndex(s => s.id === id);
+        if (index !== -1) {
+          state.retailShops[index] = { ...state.retailShops[index], ...shopData };
+          showToast("Retail shop profile updated.");
+        }
       }
     } else {
       // Create
-      shopData.id = "shop-" + Date.now();
-      state.shops.push(shopData);
-      showToast("New shop added.");
+      if (type === "menu") {
+        shopData.id = "shop-" + Date.now();
+        state.shops.push(shopData);
+        showToast("New restaurant added.");
+      } else {
+        if (!state.retailShops) state.retailShops = [];
+        shopData.id = "retail-" + Date.now();
+        state.retailShops.push(shopData);
+        showToast("New retail shop added.");
+      }
     }
 
     saveState();
     renderShops();
+    renderRetailShops();
     closeShopEditModal();
   }
 
@@ -961,11 +1102,11 @@
     const shop = state.shops.find(s => s.id === shopId);
     if (!shop) return;
     
-    if (confirm(`Are you sure you want to delete shop "${shop.name}"?`)) {
+    if (confirm(`Are you sure you want to delete restaurant "${shop.name}"?`)) {
       state.shops = state.shops.filter(s => s.id !== shopId);
       saveState();
       renderShops();
-      showToast(`Shop "${shop.name}" deleted.`, "error");
+      showToast(`Restaurant "${shop.name}" deleted.`, "error");
     }
   }
 
@@ -1244,7 +1385,10 @@
     }
 
     // Shop editing triggers
-    els.addShopBtn.addEventListener("click", () => openShopEditModal());
+    els.addShopBtn.addEventListener("click", () => openShopEditModal("", "menu"));
+    if (els.addRetailShopBtn) {
+      els.addRetailShopBtn.addEventListener("click", () => openShopEditModal("", "retail"));
+    }
     els.closeShopModalBtn.addEventListener("click", closeShopEditModal);
     els.cancelShopModalBtn.addEventListener("click", closeShopEditModal);
     els.shopEditForm.addEventListener("submit", saveShop);

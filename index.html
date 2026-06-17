@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2.3">
+  <link rel="stylesheet" href="style.css?v=2.4">
 </head>
 <body>
 
@@ -91,6 +91,7 @@
       <ul class="nav-list">
         <li><button class="nav-link-btn" data-target="about-panel">ABOUT US!</button></li>
         <li><button class="nav-link-btn" data-target="shops-panel">OUR MENUS!</button></li>
+        <li><button class="nav-link-btn" data-target="ourshops-panel">OUR SHOPS!</button></li>
         <li><button class="nav-link-btn" data-target="leasing-panel">LEASING!</button></li>
         <li><button class="nav-link-btn" data-target="events-panel">NEW EVENTS!</button></li>
       </ul>
@@ -146,7 +147,29 @@
     </div>
   </section>
 
-  <!-- 3. Leasing Panel -->
+  <!-- 3. Our Shops Panel -->
+  <section id="ourshops-panel" class="overlay-panel">
+    <div class="panel-header">
+      <button class="panel-back-btn">&larr; Back</button>
+      <button class="panel-close-btn">&times;</button>
+    </div>
+    <div class="panel-content container">
+      <div class="shops-panel-header">
+        <h2 class="section-title">OUR SHOPS</h2>
+        <p class="section-subtitle">Discover premium retail boutiques, beauty salons, and wellness services at BLOQ</p>
+        <div class="admin-edit-placeholder" data-editable="retail-shops-list">
+          <button id="add-retail-shop-btn" class="admin-action-btn add-btn">+ Add New Shop</button>
+        </div>
+      </div>
+      
+      <!-- Retail Shops Grid -->
+      <div id="retail-shops-grid" class="shops-grid">
+        <!-- Dynamically populated with retail shop cards -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Leasing Panel -->
   <section id="leasing-panel" class="overlay-panel">
     <div class="panel-header">
       <button class="panel-back-btn">&larr; Back</button>
@@ -327,6 +350,7 @@
       </div>
       <form id="shop-edit-form" class="modal-form">
         <input type="hidden" id="edit-shop-id">
+        <input type="hidden" id="edit-shop-type">
         <div class="form-grid">
           <div class="form-group">
             <label for="edit-shop-name">Shop Name (e.g. MINH NHI)</label>
@@ -485,7 +509,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <!-- Data & Application Logic scripts -->
-  <script src="data.js?v=2.3"></script>
-  <script src="app.js?v=2.3"></script>
+  <script src="data.js?v=2.4"></script>
+  <script src="app.js?v=2.4"></script>
 </body>
 </html>

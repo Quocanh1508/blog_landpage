@@ -4,7 +4,7 @@
 const DEFAULT_LOGO = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="95" fill="%23d32f2f"/><rect x="60" y="50" width="80" height="70" fill="white" rx="8"/><g><path d="M70 50 L110 120 M90 50 L130 120 M110 50 L140 102 M60 70 L90 120 M60 92 L75 120" stroke="%23d32f2f" stroke-width="8" stroke-linecap="round"/></g><text x="100" y="165" font-family="'Outfit', 'Inter', sans-serif" font-weight="900" font-size="28" fill="white" text-anchor="middle" letter-spacing="6">BLOQ</text></svg>`;
 
 window.DEFAULT_CONFIG = {
-  configVersion: 4,
+  configVersion: 5,
   desktopBgUrl: "assets/freecompress-0522 (2)(6).mp4",
   desktopBgType: "video",
   desktopSlideshow: [
@@ -69,6 +69,41 @@ window.DEFAULT_CONFIG = {
       description: "Golden flaky croissants, pain au chocolat, fruit tarts, and fresh sourdough baked daily using French butter. Click here to view our bakery menu.",
       image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&auto=format&fit=crop&q=80",
       driveUrl: "https://drive.google.com/file/d/1W5ZtFfP2bCgXUvI-Jz9D78cEaNlXFh9GfS/view?usp=sharing"
+    }
+  ],
+  
+  retailShops: [
+    {
+      id: "retail-1",
+      name: "TROPICANA BOUTIQUE",
+      subtitle: "Fashion & Accessories",
+      description: "Curated resort wear, handmade accessories, and tropical-inspired fashion items for your perfect styling.",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80",
+      shopUrl: "https://www.facebook.com/bloqsaigon"
+    },
+    {
+      id: "retail-2",
+      name: "L'APOTHIQUAIRE SPA",
+      subtitle: "Wellness & Beauty",
+      description: "French-style luxury day spa offering organic facial treatments, aromatherapy, and premium skincare products.",
+      image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&auto=format&fit=crop&q=80",
+      shopUrl: "https://www.facebook.com/bloqsaigon"
+    },
+    {
+      id: "retail-3",
+      name: "THE DESIGN HOUSE",
+      subtitle: "Home Decor & Lifestyle",
+      description: "Minimalist Scandinavian furniture, custom ceramics, scented candles, and unique local craftsmanship items.",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80",
+      shopUrl: "https://www.facebook.com/bloqsaigon"
+    },
+    {
+      id: "retail-4",
+      name: "CLAY & ART STUDIO",
+      subtitle: "Creative Ceramic Pottery",
+      description: "Hands-on pottery workshops, clay painting classes, and retail of artisanal handmade ceramic tableware.",
+      image: "https://images.unsplash.com/photo-1565192647048-f997ded87958?w=600&auto=format&fit=crop&q=80",
+      shopUrl: "https://www.facebook.com/bloqsaigon"
     }
   ],
   
