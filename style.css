@@ -3,8 +3,8 @@
    ========================================================================== */
 
 :root {
-  --primary-color: #e1251b; /* BLOQ Red */
-  --primary-hover: #b8160f;
+  --primary-color: #fbb637; /* BLOQ Golden Orange */
+  --primary-hover: #e5a42e;
   --accent-blue: #2196f3;
   --accent-green: #4caf50;
   
@@ -443,8 +443,8 @@ a {
   right: -100%;
   width: 100%;
   height: 100vh;
-  background: rgba(13, 15, 20, 0.95);
-  backdrop-filter: blur(25px);
+  background: rgba(13, 15, 20, 0.70);
+  backdrop-filter: blur(18px);
   z-index: 90;
   transition: var(--transition-smooth);
   overflow-y: auto;
@@ -464,7 +464,7 @@ a {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: sticky;
   top: 0;
-  background: rgba(13, 15, 20, 0.98);
+  background: rgba(13, 15, 20, 0.80);
   z-index: 10;
 }
 
@@ -636,46 +636,59 @@ a {
 
 .shops-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  max-width: 900px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* Premium Horizontal Shop Cards (Matches UX from screenshot 3) */
+/* Premium Vertical Shop Cards (3-column grid layout) */
 .shop-card {
   display: flex;
-  border-radius: 24px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-radius: 20px;
   overflow: hidden;
-  background: var(--glass-bg);
+  background: rgba(15, 23, 42, 0.55);
   border: 1px solid var(--glass-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   transition: var(--transition-smooth);
   cursor: pointer;
-  min-height: 180px;
   position: relative;
+  padding: 1.5rem 1rem 1.25rem;
 }
 
 .shop-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  background: var(--glass-bg-hover);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  transform: translateY(-6px);
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(251, 182, 55, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .shop-card-visual {
-  width: 40%;
-  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
   overflow: hidden;
+  margin-bottom: 1rem;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-  .shop-card {
-    flex-direction: column;
+.shop-card:hover .shop-card-visual {
+  border-color: var(--primary-color);
+}
+
+@media (max-width: 900px) {
+  .shops-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .shop-card-visual {
-    width: 100%;
-    height: 180px;
+}
+
+@media (max-width: 540px) {
+  .shops-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -687,59 +700,52 @@ a {
 }
 
 .shop-card:hover .shop-card-img {
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
 .shop-card-content {
-  flex: 1;
-  padding: 1.75rem 2.25rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  background: linear-gradient(90deg, rgba(13, 15, 20, 0.95) 0%, rgba(13, 15, 20, 0.7) 100%);
-  backdrop-filter: var(--glass-blur);
+  align-items: center;
+  width: 100%;
 }
 
 .shop-card-title {
   font-family: var(--font-heading);
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: var(--text-white);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .shop-card-subtitle {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--primary-color);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.6rem;
   text-transform: uppercase;
 }
 
 .shop-card-desc {
-  font-size: 0.95rem;
-  color: var(--text-gray);
-  line-height: 1.5;
-  margin-bottom: 1rem;
+  display: none; /* Hidden in card view — description not shown in 3-col layout */
 }
 
 .shop-card-action {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--accent-blue);
+  letter-spacing: 0.3px;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: auto;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
   transition: var(--transition-fast);
 }
 
 .shop-card:hover .shop-card-action {
   color: var(--text-white);
-  transform: translateX(4px);
 }
 
 /* ==========================================================================

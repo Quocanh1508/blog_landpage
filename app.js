@@ -170,6 +170,9 @@
     renderAll();
     setupEventListeners();
     startFirebaseSync();
+
+    // Default: auto-open the Our Menus panel
+    openPanel("shops-panel");
   }
 
   function loadState() {
@@ -596,12 +599,11 @@
         <div class="shop-card-content">
           <h3 class="shop-card-title">${shop.name}</h3>
           <h4 class="shop-card-subtitle">${shop.subtitle}</h4>
-          <p class="shop-card-desc">${shop.description}</p>
           <div class="shop-card-action">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
             </svg>
-            Click here for menu (Google Drive PDF)
+            Click here for Menu (PDF)
           </div>
           ${adminControls}
         </div>
@@ -744,8 +746,8 @@
     e.preventDefault();
     const password = els.adminPasswordInput.value;
     
-    // Check credentials: admin / bloqthaodien
-    if (password === "bloqthaodien") {
+    // Check credentials
+    if (password === "BLOQ2026TranNgocDien") {
       isAdmin = true;
       sessionStorage.setItem("bloq_admin_active", "true");
       document.body.classList.add("admin-logged-in");
